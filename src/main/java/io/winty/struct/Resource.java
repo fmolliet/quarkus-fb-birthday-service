@@ -2,6 +2,7 @@ package io.winty.struct;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.SecureRandom;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -18,6 +19,8 @@ import org.jboss.logging.Logger;
 
 @Path("/birthday")
 public class Resource {
+    
+    public static final SecureRandom random = new SecureRandom();
     
     private static final Logger log = Logger.getLogger(Resource.class);
 
@@ -39,7 +42,7 @@ public class Resource {
         @Transactional
     public Response create(CreateDTO request) throws URISyntaxException {
         log.info(request);
-        
+        random.nextBytes(new byte[8]);
         Birthday birthday = new Birthday();
         
         birthday.setDay(request.day);
