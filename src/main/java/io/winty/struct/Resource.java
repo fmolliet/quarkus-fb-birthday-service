@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -42,8 +44,12 @@ public class Resource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
         @Transactional
-    public Response create(CreateDTO request) throws URISyntaxException {
+    public Response create(@Valid CreateDTO request) throws URISyntaxException {
         log.info("CRIANDO: " + request);
+              
+        if ( Birthday.findBySnowflake(request.snowflake) != null ){
+            throw new BadRequestException("Usuário já cadastrado.");
+        }
         
         Birthday birthday = new Birthday();
         
@@ -62,12 +68,12 @@ public class Resource {
     
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(CreateDTO request){
+    public Response update(@Valid CreateDTO request){
         log.info("ATUALIZANDO: " + request);
         Birthday birthday = Birthday.findBySnowflake(request.snowflake);
         
         if ( birthday == null ){
-            throw new NotFoundException("Usuário não encontrado na base");
+            throw new NotFoundException("Usuário não encontrado na base.");
         }
         
         birthday.setDay(request.day);
@@ -87,7 +93,7 @@ public class Resource {
         Birthday birthday = Birthday.findBySnowflake(snowflake);
         
         if ( birthday == null ){
-            throw new NotFoundException("Usuário não encontrado na base");
+            throw new NotFoundException("Usuário não encontrado na base.");
         }
         
         birthday.delete();
