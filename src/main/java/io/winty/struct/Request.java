@@ -7,6 +7,11 @@ import javax.validation.constraints.NotEmpty;
 
 import lombok.ToString;
 
+/**
+ * Classe de recebimento de dados
+ * utilizando hibernate validator
+ * https://quarkus.io/guides/validation
+ */
 @ToString
 public class Request {
     @Max(value=30)
