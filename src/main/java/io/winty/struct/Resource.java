@@ -19,18 +19,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse.Status;
 
+import lombok.extern.jbosslog.JBossLog;
+
 @Path("/birthday")
+@JBossLog
 public class Resource {
-    
-    private static final Logger log = Logger.getLogger(Resource.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Birthday> list() {
         return Birthday.findAll().list();
+    }
+    
+    @GET
+    @Path("/today")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Birthday> today() {
+        return Birthday.findTodayBirthDays();
     }
     
     @GET
@@ -44,8 +51,8 @@ public class Resource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
         @Transactional
-    public Response create(@Valid CreateDTO request) throws URISyntaxException {
-        log.info("CRIANDO: " + request);
+    public Response create(@Valid Request request) throws URISyntaxException {
+        log.info("CREATE: " + request);
               
         if ( Birthday.findBySnowflake(request.snowflake) != null ){
             throw new BadRequestException("Usuário já cadastrado.");
@@ -68,8 +75,8 @@ public class Resource {
     
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@Valid CreateDTO request){
-        log.info("ATUALIZANDO: " + request);
+    public Response update(@Valid Request request){
+        log.info("UPDATE: " + request);
         Birthday birthday = Birthday.findBySnowflake(request.snowflake);
         
         if ( birthday == null ){

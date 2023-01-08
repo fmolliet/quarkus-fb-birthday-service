@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import lombok.ToString;
 
 @ToString
-public class CreateDTO {
+public class Request {
     @Max(value=30)
     @Min(value=1)
     public int day;
