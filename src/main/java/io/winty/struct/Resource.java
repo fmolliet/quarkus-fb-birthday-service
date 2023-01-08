@@ -43,6 +43,7 @@ public class Resource {
         @Min(0) 
         @Max(50) 
         @QueryParam("size") int size) {
+        log.info("LIST");
         if(size==0){size = 10;} 
         return Birthday.listAllBirthDays(page, size);
     }
@@ -52,6 +53,7 @@ public class Resource {
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "birthdays") 
     public List<Birthday> today() {
+        log.info("TODAY");
         return Birthday.findTodayBirthDays();
     }
     
@@ -60,7 +62,7 @@ public class Resource {
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "birthdays") 
     public Birthday get(@PathParam("snowflake") String snowflake) {
-        log.info("BUSCANDO: " + snowflake);
+        log.info("GET: " + snowflake);
         return Birthday.findBySnowflake(snowflake);
     }
     
@@ -115,7 +117,7 @@ public class Resource {
     @Path("/{snowflake}")
     @CacheInvalidateAll(cacheName = "birthdays")
     public Response delete(  @PathParam("snowflake") String snowflake ){
-        log.info("DELETANDO: " + snowflake);
+        log.info("DELETE: " + snowflake);
         
         Birthday birthday = Birthday.findBySnowflake(snowflake);
         
