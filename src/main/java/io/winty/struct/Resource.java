@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -16,11 +18,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse.Status;
 
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheResult;
 import lombok.extern.jbosslog.JBossLog;
 
 @Path("/birthday")
@@ -29,13 +34,23 @@ public class Resource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Birthday> list() {
-        return Birthday.findAll().list();
+    @CacheResult(cacheName = "birthdays") 
+    
+    public List<Birthday> list(
+        @Min(0) 
+        @Max(1000) 
+        @QueryParam("page") int page, 
+        @Min(0) 
+        @Max(50) 
+        @QueryParam("size") int size) {
+        if(size==0){size = 10;} 
+        return Birthday.listAllBirthDays(page, size);
     }
     
     @GET
     @Path("/today")
     @Produces(MediaType.APPLICATION_JSON)
+    @CacheResult(cacheName = "birthdays") 
     public List<Birthday> today() {
         return Birthday.findTodayBirthDays();
     }
@@ -43,6 +58,7 @@ public class Resource {
     @GET
     @Path("/{snowflake}")
     @Produces(MediaType.APPLICATION_JSON)
+    @CacheResult(cacheName = "birthdays") 
     public Birthday get(@PathParam("snowflake") String snowflake) {
         log.info("BUSCANDO: " + snowflake);
         return Birthday.findBySnowflake(snowflake);
@@ -50,7 +66,8 @@ public class Resource {
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-        @Transactional
+    @Transactional
+    @CacheInvalidateAll(cacheName = "birthdays") 
     public Response create(@Valid Request request) throws URISyntaxException {
         log.info("CREATE: " + request);
               
@@ -75,6 +92,8 @@ public class Resource {
     
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    @CacheInvalidateAll(cacheName = "birthdays")
     public Response update(@Valid Request request){
         log.info("UPDATE: " + request);
         Birthday birthday = Birthday.findBySnowflake(request.snowflake);
@@ -94,6 +113,7 @@ public class Resource {
     
     @DELETE
     @Path("/{snowflake}")
+    @CacheInvalidateAll(cacheName = "birthdays")
     public Response delete(  @PathParam("snowflake") String snowflake ){
         log.info("DELETANDO: " + snowflake);
         

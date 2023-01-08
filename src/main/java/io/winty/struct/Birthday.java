@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
+import io.quarkus.mongodb.panache.PanacheQuery;
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Parameters;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,5 +30,10 @@ public class Birthday extends PanacheMongoEntity {
         LocalDate today = LocalDate.now();
         return find("{'day': :day, 'month': :month}",
             Parameters.with("day", today.getDayOfMonth()).and("month", today.getMonthValue())).list();
+    }
+    
+    public static List<Birthday> listAllBirthDays(int page, int size) {
+        PanacheQuery<Birthday> listCars = findAll();
+        return listCars.page(Page.of(page, size)).list();
     }
 }
