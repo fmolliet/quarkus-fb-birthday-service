@@ -32,8 +32,16 @@ public class Birthday extends PanacheMongoEntity {
             Parameters.with("day", today.getDayOfMonth()).and("month", today.getMonthValue())).list();
     }
     
+    public static List<Birthday> findMonthBirthDays(){
+        LocalDate today = LocalDate.now();
+        return find("{'month': :month}",
+            Parameters.with("month", today.getMonthValue())).list();
+    }
+    
     public static List<Birthday> listAllBirthDays(int page, int size) {
         PanacheQuery<Birthday> listCars = findAll();
         return listCars.page(Page.of(page, size)).list();
     }
+    
+    
 }

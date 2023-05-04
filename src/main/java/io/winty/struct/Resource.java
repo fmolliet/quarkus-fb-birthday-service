@@ -58,6 +58,15 @@ public class Resource {
     }
     
     @GET
+    @Path("/month")
+    @Produces(MediaType.APPLICATION_JSON)
+    @CacheResult(cacheName = "birthdays") 
+    public List<Birthday> month() {
+        log.info("MONTH");
+        return Birthday.findMonthBirthDays();
+    }
+    
+    @GET
     @Path("/{snowflake}")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "birthdays") 
