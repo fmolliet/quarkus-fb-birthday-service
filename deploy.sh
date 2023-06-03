@@ -1,5 +1,5 @@
 # Building Quarkus native
-quarkus build --native
+#quarkus build --native
 # docker-compose build 
 # Build new image
 docker build . -t birthday-service:latest --no-cache

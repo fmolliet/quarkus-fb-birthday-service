@@ -14,7 +14,7 @@ import lombok.ToString;
  */
 @ToString
 public class Request {
-    @Max(value=30)
+    @Max(value=31)
     @Min(value=1)
     public int day;
     @Max(value=12)
