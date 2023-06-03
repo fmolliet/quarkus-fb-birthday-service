@@ -35,7 +35,6 @@ public class Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "birthdays") 
-    
     public List<Birthday> list(
         @Min(0) 
         @Max(1000) 
@@ -51,7 +50,7 @@ public class Resource {
     @GET
     @Path("/today")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "birthdays") 
+    @CacheResult(cacheName = "birthdayToday") 
     public List<Birthday> today() {
         log.info("TODAY");
         return Birthday.findTodayBirthDays();
@@ -60,7 +59,7 @@ public class Resource {
     @GET
     @Path("/month")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "birthdays") 
+    @CacheResult(cacheName = "birthdaysMonth") 
     public List<Birthday> month() {
         log.info("MONTH");
         return Birthday.findMonthBirthDays();
@@ -79,6 +78,8 @@ public class Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheInvalidateAll(cacheName = "birthdays") 
+    @CacheInvalidateAll(cacheName = "birthdayToday") 
+    @CacheInvalidateAll(cacheName = "birthdaysMonth") 
     public Response create(@Valid Request request) throws URISyntaxException {
         log.info("CREATE: " + request);
               
