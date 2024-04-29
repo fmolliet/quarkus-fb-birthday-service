@@ -1,29 +1,20 @@
-####
-# This Dockerfile is used in order to build a container that runs the Quarkus application in native (no JVM) mode.
-#
-# Before building the container image run:
-#
-# ./mvnw package -Pnative
-#
-# Then, build the image with:
-#
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/birthday-service .
-#
-# Then run the container using:
-#
-# docker run -i --rm -p 8080:8080 quarkus/birthday-service
-#
-###
+
+# Estágio de compilação
+FROM quay.io/quarkus/centos-quarkus-maven:21.2.0-java11 AS build
+WORKDIR /app
+COPY . /app
+RUN mvn clean package -Pnative
+
+# Estágio de execução
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 WORKDIR /work/
 
 ENV TZ=America/Sao_Paulo
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
-COPY --chown=1001:root target/*-runner /work/application
+COPY --from=build --chown=1001:root /app/target/*-runner /work/application
 
 COPY --chown=1001:root healthcheck.sh /usr/local/bin/healthcheck.sh
 

@@ -31,6 +31,8 @@ import lombok.extern.jbosslog.JBossLog;
 @Path("/birthday")
 @JBossLog
 public class Resource {
+    
+    private static final String NOT_FOUND_MESSAGE = "Usuário não encontrado na base.";
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,7 +42,7 @@ public class Resource {
         @Max(1000) 
         @QueryParam("page") int page, 
         @Min(0) 
-        @Max(50) 
+        @Max(2000) 
         @QueryParam("size") int size) {
         log.info("LIST");
         if(size==0){size = 10;} 
@@ -84,6 +86,7 @@ public class Resource {
         log.info("CREATE: " + request);
               
         if ( Birthday.findBySnowflake(request.snowflake) != null ){
+            log.warn("Usuário já cadastrado.");
             throw new BadRequestException("Usuário já cadastrado.");
         }
         
@@ -111,14 +114,15 @@ public class Resource {
         Birthday birthday = Birthday.findBySnowflake(request.snowflake);
         
         if ( birthday == null ){
-            throw new NotFoundException("Usuário não encontrado na base.");
+            log.warn(NOT_FOUND_MESSAGE);
+            throw new NotFoundException(NOT_FOUND_MESSAGE);
         }
         
         birthday.setDay(request.day);
         birthday.setMonth(request.month);
         birthday.setName(request.name);
         
-        birthday.update();
+        birthday.persist();
         
         return Response.ok(birthday).status(Status.ACCEPTED).build();
     }      
@@ -132,7 +136,8 @@ public class Resource {
         Birthday birthday = Birthday.findBySnowflake(snowflake);
         
         if ( birthday == null ){
-            throw new NotFoundException("Usuário não encontrado na base.");
+            log.warn(NOT_FOUND_MESSAGE);
+            throw new NotFoundException(NOT_FOUND_MESSAGE);
         }
         
         birthday.delete();
