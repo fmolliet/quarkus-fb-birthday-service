@@ -3,20 +3,25 @@ package io.winty.struct;
 import java.time.LocalDate;
 import java.util.List;
 
-import io.quarkus.mongodb.panache.PanacheMongoEntity;
-import io.quarkus.mongodb.panache.PanacheQuery;
-import io.quarkus.mongodb.panache.common.MongoEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Parameters;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@MongoEntity(collection="birthdays")
+@Entity
 @Getter
 @Setter
 @ToString
-public class Birthday extends PanacheMongoEntity {
+@Table(name = "birthdays")
+public class Birthday extends PanacheEntityBase {
+    @Id
+    private long id;
     private String name;
     private String snowflake;
     private int day;
