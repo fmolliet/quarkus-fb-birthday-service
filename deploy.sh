@@ -1,7 +1,7 @@
 #!/bin/bash
 #export JAVA_HOME=C:/java/graalvm-jdk-21.0.4_8.1
 # Extrai a versão do pom.xml
-VERSION=1.1.2
+VERSION=1.0.0-SNAPSHOT
 
 # Verifica se a versão foi extraída corretamente
 if [ -z "$VERSION" ]; then
@@ -21,7 +21,7 @@ echo "Versão do projeto: $VERSION"
 #fi
 
 # Build new image
-docker build . -t birthday-service:latest --no-cache
+docker build . -t fb-services:snapshot --no-cache
 
 # Verifica se a imagem foi criada com sucesso
 if [ $? -ne 0 ]; then
@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Tag image
-docker tag birthday-service:latest winty.io:5000/winty/birthday-service:$VERSION
+docker tag fb-services:snapshot winty.io:5000/winty/fb-services:$VERSION
 
 # Verifica se a imagem foi marcada com sucesso
 if [ $? -ne 0 ]; then
@@ -39,7 +39,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Push image to remote server
-docker push winty.io:5000/winty/birthday-service:$VERSION
+docker push winty.io:5000/winty/fb-services:$VERSION
 
 # Verifica se o push foi bem sucedido
 if [ $? -ne 0 ]; then

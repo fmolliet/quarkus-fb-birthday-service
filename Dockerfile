@@ -14,7 +14,7 @@
 # docker run -i --rm -p 8080:8080 quarkus/birthday-service
 #
 ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
 WORKDIR /work/
 
 ENV TZ=America/Sao_Paulo
@@ -25,12 +25,11 @@ RUN chown 1001 /work \
     && chown 1001:root /work
 COPY --chown=1001:root target/*-runner /work/application
 
-COPY --chown=1001:root healthcheck.sh /usr/local/bin/healthcheck.sh
-
 # HealthCheck
+COPY --chown=1001:root healthcheck.sh /usr/local/bin/healthcheck.sh
 HEALTHCHECK CMD /usr/local/bin/healthcheck.sh
 
 EXPOSE 8080
 USER 1001
 
-CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]

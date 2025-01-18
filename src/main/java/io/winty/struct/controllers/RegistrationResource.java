@@ -7,10 +7,7 @@ import java.util.UUID;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.jboss.resteasy.reactive.RestResponse.Status;
 
-import io.quarkus.cache.CacheInvalidateAll;
-import io.winty.struct.models.Birthday;
 import io.winty.struct.models.Register;
-import io.winty.struct.models.dto.BirthdayRequestDto;
 import io.winty.struct.models.dto.CreateRegisterDto;
 import io.winty.struct.models.dto.UpdateRegisterDto;
 import jakarta.transaction.Transactional;
