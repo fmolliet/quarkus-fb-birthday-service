@@ -1,0 +1,19 @@
+meta {
+  name: Finishing Registration
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:8081/registration
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "applicantId":"123455667",
+    "curatorId":"aaaaaaa",
+    "approved":true
+  }
+}

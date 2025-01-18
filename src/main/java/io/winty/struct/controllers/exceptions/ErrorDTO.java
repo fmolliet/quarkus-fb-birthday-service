@@ -1,4 +1,4 @@
-package io.winty.struct;
+package io.winty.struct.controllers.exceptions;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Data;
