@@ -1,4 +1,4 @@
-package io.winty.struct;
+package io.winty.struct.models.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,7 +13,7 @@ import lombok.ToString;
  * https://quarkus.io/guides/validation
  */
 @ToString
-public class Request {
+public class BirthdayRequestDto {
     @Max(value=31)
     @Min(value=1)
     public int day;

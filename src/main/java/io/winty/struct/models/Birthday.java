@@ -1,6 +1,8 @@
-package io.winty.struct;
+package io.winty.struct.models;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -20,26 +22,39 @@ import lombok.ToString;
 @ToString
 @Table(name = "birthdays")
 public class Birthday extends PanacheEntityBase {
-    @Id
-    private long id;
     private String name;
+    @Id
     private String snowflake;
     private int day;
     private int month;
     
     public static Birthday findBySnowflake( String snowflake){
-        return find("snowflake", snowflake).firstResult();
+        return find("snowflake = :snowflake", Parameters.with("snowflake", snowflake)).firstResult();
     }
     
     public static List<Birthday> findTodayBirthDays(){
-        LocalDate today = LocalDate.now();
-        return find("{'day': :day, 'month': :month}",
+        ZoneId zoneId = ZoneId.of("GMT-3");
+
+        // Get the current date and time in GMT-3
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+
+        // Extract the LocalDate from the ZonedDateTime
+        LocalDate today = zonedDateTime.toLocalDate();
+
+        return find("day = :day AND month = :month",
             Parameters.with("day", today.getDayOfMonth()).and("month", today.getMonthValue())).list();
     }
     
     public static List<Birthday> findMonthBirthDays(){
-        LocalDate today = LocalDate.now();
-        return find("{'month': :month}",
+        ZoneId zoneId = ZoneId.of("GMT-3");
+
+        // Get the current date and time in GMT-3
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+
+        // Extract the LocalDate from the ZonedDateTime
+        LocalDate today = zonedDateTime.toLocalDate();
+
+        return find("month = :month",
             Parameters.with("month", today.getMonthValue())).list();
     }
     

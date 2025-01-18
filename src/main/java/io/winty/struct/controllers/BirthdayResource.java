@@ -1,4 +1,4 @@
-package io.winty.struct;
+package io.winty.struct.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,11 +26,13 @@ import org.jboss.resteasy.reactive.RestResponse.Status;
 
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheResult;
+import io.winty.struct.models.Birthday;
+import io.winty.struct.models.dto.BirthdayRequestDto;
 import lombok.extern.jbosslog.JBossLog;
 
 @Path("/birthday")
 @JBossLog
-public class Resource {
+public class BirthdayResource {
     
     private static final String NOT_FOUND_MESSAGE = "Usuário não encontrado na base.";
 
@@ -52,7 +54,6 @@ public class Resource {
     @GET
     @Path("/today")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "birthdayToday") 
     public List<Birthday> today() {
         log.info("TODAY");
         return Birthday.findTodayBirthDays();
@@ -61,7 +62,6 @@ public class Resource {
     @GET
     @Path("/month")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "birthdaysMonth") 
     public List<Birthday> month() {
         log.info("MONTH");
         return Birthday.findMonthBirthDays();
@@ -80,9 +80,8 @@ public class Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheInvalidateAll(cacheName = "birthdays") 
-    @CacheInvalidateAll(cacheName = "birthdayToday") 
     @CacheInvalidateAll(cacheName = "birthdaysMonth") 
-    public Response create(@Valid Request request) throws URISyntaxException {
+    public Response create(@Valid BirthdayRequestDto request) throws URISyntaxException {
         log.info("CREATE: " + request);
               
         if ( Birthday.findBySnowflake(request.snowflake) != null ){
@@ -109,7 +108,7 @@ public class Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheInvalidateAll(cacheName = "birthdays")
-    public Response update(@Valid Request request){
+    public Response update(@Valid BirthdayRequestDto request){
         log.info("UPDATE: " + request);
         Birthday birthday = Birthday.findBySnowflake(request.snowflake);
         
@@ -129,6 +128,7 @@ public class Resource {
     
     @DELETE
     @Path("/{snowflake}")
+    @Transactional
     @CacheInvalidateAll(cacheName = "birthdays")
     public Response delete(  @PathParam("snowflake") String snowflake ){
         log.info("DELETE: " + snowflake);

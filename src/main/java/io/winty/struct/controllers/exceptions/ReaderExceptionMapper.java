@@ -1,4 +1,4 @@
-package io.winty.struct;
+package io.winty.struct.controllers.exceptions;
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ClientErrorException;

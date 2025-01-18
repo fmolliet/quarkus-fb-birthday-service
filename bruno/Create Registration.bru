@@ -1,0 +1,21 @@
+meta {
+  name: Create Registration
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8081/registration
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "applicantId":"123455667",
+    "birthday":"10/10/1996",
+    "specie":"Lobo",
+    "source":"Google",
+    "messageId":"aaaaaaa"
+  }
+}
